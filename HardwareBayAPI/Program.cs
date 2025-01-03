@@ -1,3 +1,6 @@
+﻿using HardwareBayAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Thêm DbContext với Connection String
+builder.Services.AddDbContext<HardwareDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("HardWareBayConnectionString")));
+
+
+
 
 var app = builder.Build();
 
