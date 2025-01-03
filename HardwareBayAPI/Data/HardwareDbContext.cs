@@ -18,5 +18,4 @@ namespace HardwareBayAPI.Data
         public DbSet<OrderDetail> OrderDetails { get; set; }
 
     }
-    }
 }

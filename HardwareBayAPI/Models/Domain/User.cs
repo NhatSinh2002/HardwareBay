@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
-
-namespace HardwareBayAPI.Models.Domain
+﻿namespace HardwareBayAPI.Models.Domain
 {
     public class User
     {
-        public Guid UserID { get; set; }
+        public int UserID { get; set; }
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public string Email { get; set; }
