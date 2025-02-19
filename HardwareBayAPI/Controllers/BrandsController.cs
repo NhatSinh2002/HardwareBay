@@ -118,5 +118,34 @@ namespace HardwareBayAPI.Controllers
 
         }
 
+        [HttpDelete]
+        [Route("{id:int}")]
+        public IActionResult Delete([FromRoute] int id) {
+            //check if brand exists
+            var brandDomainModel = dbContext.Brands.FirstOrDefault(b => b.BrandID == id);
+            if (brandDomainModel == null)
+            {
+                return NotFound();
+            }
+            // delete brand
+            dbContext.Brands.Remove(brandDomainModel);
+            dbContext.SaveChanges();
+
+            
+
+            // return deleted brand
+            //map domain model to DTO
+            var brandDto = new BrandDto()
+            {
+                BrandID = brandDomainModel.BrandID,
+                BrandName = brandDomainModel.BrandName,
+                Description = brandDomainModel.Description,
+                IsActive = brandDomainModel.IsActive
+            };
+
+            return Ok(brandDto);
+        }
+
+
     }
 }
