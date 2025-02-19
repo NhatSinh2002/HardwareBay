@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
-
-namespace HardwareBayAPI.Models.Domain
+﻿namespace HardwareBayAPI.Models.Domain
 {
     public class Product
     {
