@@ -8,6 +8,7 @@ namespace HardwareBayAPI.Data
         public HardwareDbContext(DbContextOptions dbContextOptions): base (dbContextOptions) { 
         
         }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }

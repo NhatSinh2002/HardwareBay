@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HardwareBayAPI.Migrations
 {
     [DbContext(typeof(HardwareDbContext))]
-    [Migration("20250103142857_Init Migration")]
-    partial class InitMigration
+    [Migration("20250219034553_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -211,7 +211,6 @@ namespace HardwareBayAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
