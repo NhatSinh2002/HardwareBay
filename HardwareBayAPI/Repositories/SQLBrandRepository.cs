@@ -13,6 +13,26 @@ namespace HardwareBayAPI.Repositories
         {
             this.dbContext = dbContext;
         }
+
+        public async Task<Brand> CreateAsync(Brand brand)
+        {
+            await dbContext.Brands.AddAsync(brand);
+            await dbContext.SaveChangesAsync();
+            return brand;
+        }
+
+        public async Task<Brand?> DeleteAsync(int id)
+        {
+            var existingBrand = await dbContext.Brands.FirstOrDefaultAsync(x => x.BrandID == id);
+            if (existingBrand == null)
+            {
+                return null;
+            }
+            dbContext.Brands.Remove(existingBrand);
+            await dbContext.SaveChangesAsync();
+            return existingBrand;
+        }
+
         public async Task<List<Brand>> GetAllAsync()
         {
             return await dbContext.Brands.ToListAsync();

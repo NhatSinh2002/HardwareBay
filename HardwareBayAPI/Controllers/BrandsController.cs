@@ -12,12 +12,10 @@ namespace HardwareBayAPI.Controllers
     [ApiController]
     public class BrandsController : ControllerBase
     {
-        private readonly HardwareDbContext dbContext;
         private readonly IBrandRepository brandRepository;
 
-        public BrandsController(HardwareDbContext dbContext, IBrandRepository brandRepository)
+        public BrandsController(IBrandRepository brandRepository)
         {
-            this.dbContext = dbContext;
             this.brandRepository = brandRepository;
         }
 
@@ -72,25 +70,26 @@ namespace HardwareBayAPI.Controllers
 
 
         [HttpPost]
-        public IActionResult Create([FromBody] AddBrandRequestDto addBrandRequestDto)
+        public async Task <IActionResult >Create([FromBody] AddBrandRequestDto addBrandRequestDto)
         {
             // Map DTO to domain models
             var brandDomainModel = new Brand()
             {
                 BrandName = addBrandRequestDto.BrandName,
-                Description = addBrandRequestDto.Description
+                Description = addBrandRequestDto.Description,
+                IsActive=addBrandRequestDto.IsActive
             };
 
             //use domain model to create Brand
-            dbContext.Brands.Add(brandDomainModel);
-            dbContext.SaveChanges();
+            brandDomainModel=await brandRepository.CreateAsync(brandDomainModel);
 
             // map domain model back to DTO
             var brandDto = new BrandDto()
             {
                 BrandID = brandDomainModel.BrandID,
                 BrandName = brandDomainModel.BrandName,
-                Description = brandDomainModel.Description
+                Description = brandDomainModel.Description,
+                IsActive = brandDomainModel.IsActive
             };
 
             return CreatedAtAction(nameof(GetBrandById), new { id = brandDto.BrandID }, brandDto);
@@ -129,21 +128,17 @@ namespace HardwareBayAPI.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-        public IActionResult Delete([FromRoute] int id) {
+        public async Task<IActionResult> Delete([FromRoute] int id) {
+            
             //check if brand exists
-            var brandDomainModel = dbContext.Brands.FirstOrDefault(b => b.BrandID == id);
+            var brandDomainModel = await brandRepository.DeleteAsync(id);
             if (brandDomainModel == null)
             {
                 return NotFound();
             }
-            // delete brand
-            dbContext.Brands.Remove(brandDomainModel);
-            dbContext.SaveChanges();
-
-            
 
             // return deleted brand
-            //map domain model to DTO
+            // map domain model to DTO
             var brandDto = new BrandDto()
             {
                 BrandID = brandDomainModel.BrandID,
