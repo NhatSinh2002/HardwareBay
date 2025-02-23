@@ -1,4 +1,5 @@
 ﻿using HardwareBayAPI.Data;
+using HardwareBayAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 // Thêm DbContext với Connection String
 builder.Services.AddDbContext<HardwareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HardWareBayConnectionString")));
+
+builder.Services.AddScoped<IBrandRepository, SQLBrandRepository>();
 
 
 

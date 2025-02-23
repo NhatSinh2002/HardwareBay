@@ -1,8 +1,10 @@
 ﻿using HardwareBayAPI.Data;
 using HardwareBayAPI.Models.Domain;
 using HardwareBayAPI.Models.DTO;
+using HardwareBayAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HardwareBayAPI.Controllers
 {
@@ -11,19 +13,21 @@ namespace HardwareBayAPI.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly HardwareDbContext dbContext;
+        private readonly IBrandRepository brandRepository;
 
-        public BrandsController(HardwareDbContext dbContext)
+        public BrandsController(HardwareDbContext dbContext, IBrandRepository brandRepository)
         {
             this.dbContext = dbContext;
+            this.brandRepository = brandRepository;
         }
 
 
 
         [HttpGet]
-        public IActionResult GetAllBrands()
+        public async Task<IActionResult> GetAllBrands()
         {
             // get data from Domain models (Database)
-            var brands = dbContext.Brands.ToList();
+            var brands = await brandRepository.GetAllAsync();
             // map domain models to DTOs
             var brandsDto = new List<BrandDto>();
             foreach (var brandDomain in brands)
@@ -33,6 +37,7 @@ namespace HardwareBayAPI.Controllers
                     BrandID = brandDomain.BrandID,
                     BrandName = brandDomain.BrandName,
                     Description = brandDomain.Description,
+                    IsActive = brandDomain.IsActive
                 });
             }
 
@@ -43,10 +48,10 @@ namespace HardwareBayAPI.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public IActionResult GetBrandById([FromRoute] int id)
+        public async Task<IActionResult> GetBrandById([FromRoute] int id)
         {
             // get data from Domain models (Database)
-            var brandDomain = dbContext.Brands.FirstOrDefault(x => x.BrandID == id);
+            var brandDomain = await brandRepository.GetByIdAsync(id);
 
             if (brandDomain == null)
             {
@@ -57,7 +62,9 @@ namespace HardwareBayAPI.Controllers
             {
                 BrandID = brandDomain.BrandID,
                 BrandName = brandDomain.BrandName,
-                Description = brandDomain.Description
+                Description = brandDomain.Description, 
+                IsActive = brandDomain.IsActive
+             
             };
             return Ok(brandDto);
         }
@@ -91,20 +98,22 @@ namespace HardwareBayAPI.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateBrandRequestDto updateBrandRequestDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateBrandRequestDto updateBrandRequestDto)
         {
+            // map DTO to domain model
+            var brandDomainModel = new Brand
+            {
+                BrandName = updateBrandRequestDto.BrandName,
+                Description = updateBrandRequestDto.Description,
+                IsActive = updateBrandRequestDto.IsActive
+            };
+
             //check if brand exists
-            var brandDomainModel = dbContext.Brands.FirstOrDefault(b => b.BrandID == id);
-            if (brandDomainModel == null)
+            brandDomainModel = await brandRepository.UpdateAsync(id, brandDomainModel);
+            if (brandRepository == null)
             {
                 return NotFound();
             }
-            //map DTO to domain model
-            brandDomainModel.BrandName = updateBrandRequestDto.BrandName;
-            brandDomainModel.Description = updateBrandRequestDto.Description;
-            brandDomainModel.IsActive = updateBrandRequestDto.IsActive;
-
-            dbContext.SaveChanges();
 
             // map domain model to DTO
             var brandDto = new BrandDto()
