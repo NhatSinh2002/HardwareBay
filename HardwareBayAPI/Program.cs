@@ -15,6 +15,7 @@ builder.Services.AddDbContext<HardwareDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("HardWareBayConnectionString")));
 
 builder.Services.AddScoped<IBrandRepository, SQLBrandRepository>();
+builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
 
 
 
