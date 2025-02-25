@@ -9,9 +9,13 @@ namespace HardwareBayAPI.Mappings
         public AutoMapperProfiles()
         {
             CreateMap<Brand,BrandDto>().ReverseMap();
-            CreateMap<Category,CategoryDto>().ReverseMap();
             CreateMap<AddBrandRequestDto, Brand>();
             CreateMap<UpdateBrandRequestDto, Brand>();
+
+            CreateMap<Category,CategoryDto>().ReverseMap();
+            CreateMap<AddCategoryRequestDto, Category>();
+            CreateMap<UpdateCategoryRequestDto, Category>();
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using HardwareBayAPI.Models.Domain;
+﻿using AutoMapper;
+using HardwareBayAPI.Models.Domain;
 using HardwareBayAPI.Models.DTO;
 using HardwareBayAPI.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +12,12 @@ namespace HardwareBayAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository categoryRepository;
+        private readonly IMapper mapper;
 
-        public CategoriesController(ICategoryRepository categoryRepository )
+        public CategoriesController(ICategoryRepository categoryRepository, IMapper mapper)
         {
             this.categoryRepository = categoryRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -23,17 +26,17 @@ namespace HardwareBayAPI.Controllers
             //Get data from domain model
             var categories = await categoryRepository.GetAllAsync();
             //Map domain model to DTO
-            var categoriesDto = new List<CategoryDto>();
-            foreach (var categoryDomain in categories)
-            {
-                categoriesDto.Add(new CategoryDto()
-                {
-                    CategoryID = categoryDomain.CategoryID,
-                    CategoryName = categoryDomain.CategoryName,
-                    Description = categoryDomain.Description,
-                    IsActive = categoryDomain.IsActive
-                });
-            }
+            var categoriesDto = mapper.Map<List<CategoryDto>>(categories);
+            //foreach (var categoryDomain in categories)
+            //{
+            //    categoriesDto.Add(new CategoryDto()
+            //    {
+            //        CategoryID = categoryDomain.CategoryID,
+            //        CategoryName = categoryDomain.CategoryName,
+            //        Description = categoryDomain.Description,
+            //        IsActive = categoryDomain.IsActive
+            //    });
+            //}
             return Ok(categoriesDto);
         }
 
@@ -47,11 +50,7 @@ namespace HardwareBayAPI.Controllers
             {
                 return NotFound();
             }
-            var categoryDto = new CategoryDto();
-            categoryDto.CategoryID = category.CategoryID;
-            categoryDto.CategoryName = category.CategoryName;
-            categoryDto.Description = category.Description;
-            categoryDto .IsActive = category.IsActive;
+            var categoryDto = mapper.Map<CategoryDto>(category);
             return Ok(categoryDto);
         }
 
@@ -59,22 +58,11 @@ namespace HardwareBayAPI.Controllers
         public async Task<IActionResult> Create(AddCategoryRequestDto addCategoryRequestDto)
         {
             //Map DTO to domain model
-            var categoryDomain = new Category()
-            {
-                CategoryName = addCategoryRequestDto.CategoryName,
-                Description = addCategoryRequestDto.Description,
-                IsActive = addCategoryRequestDto.IsActive
-            };
+            var categoryDomain = mapper.Map<Category>(addCategoryRequestDto);
             //create category
             categoryDomain = await categoryRepository.CreateAsync(categoryDomain);
             //Map domain model back to DTO
-            var categoryDto = new CategoryDto()
-            {
-                CategoryID = categoryDomain.CategoryID,
-                CategoryName = categoryDomain.CategoryName,
-                Description = categoryDomain.Description,
-                IsActive = categoryDomain.IsActive
-            };
+            var categoryDto = mapper.Map<CategoryDto>(categoryDomain);
             return CreatedAtAction(nameof(GetCategoryByID), new { id = categoryDto.CategoryID }, categoryDto);
         }
 
@@ -83,12 +71,7 @@ namespace HardwareBayAPI.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
         {
             //map DTO to domain model
-            var categoryDomain = new Category()
-            {
-                CategoryName= updateCategoryRequestDto.CategoryName,
-                Description = updateCategoryRequestDto.Description,
-                IsActive = updateCategoryRequestDto.IsActive
-            };
+            var categoryDomain = mapper.Map<Category>(updateCategoryRequestDto);
             //check category and update
             categoryDomain = await categoryRepository.UpdateAsync(id,categoryDomain);
             if (categoryDomain == null)
@@ -97,13 +80,7 @@ namespace HardwareBayAPI.Controllers
             }
 
             //map domain model to DTO
-            var categoryDto = new CategoryDto()
-            {
-                CategoryID = categoryDomain.CategoryID,
-                CategoryName = categoryDomain.CategoryName,
-                Description = categoryDomain.Description,
-                IsActive = categoryDomain.IsActive
-            };
+            var categoryDto = mapper.Map<CategoryDto>(categoryDomain);
             return Ok(categoryDto);
         }
 
@@ -118,13 +95,7 @@ namespace HardwareBayAPI.Controllers
                 return NotFound();
             }
             //map domain model to DTO
-            var categoryDto = new CategoryDto()
-            {
-                CategoryID = categoryDomain.CategoryID,
-                CategoryName = categoryDomain.CategoryName,
-                Description = categoryDomain.Description,
-                IsActive = categoryDomain.IsActive
-            };
+            var categoryDto = mapper.Map<CategoryDto> (categoryDomain);
             return Ok(categoryDto);
         }
     }
