@@ -1,4 +1,5 @@
 ﻿using HardwareBayAPI.Data;
+using HardwareBayAPI.Mappings;
 using HardwareBayAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<HardwareDbContext>(options =>
 builder.Services.AddScoped<IBrandRepository, SQLBrandRepository>();
 builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
 
-
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 
 var app = builder.Build();

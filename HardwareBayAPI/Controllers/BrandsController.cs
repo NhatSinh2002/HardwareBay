@@ -1,4 +1,5 @@
-﻿using HardwareBayAPI.Data;
+﻿using AutoMapper;
+using HardwareBayAPI.Data;
 using HardwareBayAPI.Models.Domain;
 using HardwareBayAPI.Models.DTO;
 using HardwareBayAPI.Repositories;
@@ -13,10 +14,12 @@ namespace HardwareBayAPI.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly IBrandRepository brandRepository;
+        private readonly IMapper mapper;
 
-        public BrandsController(IBrandRepository brandRepository)
+        public BrandsController(IBrandRepository brandRepository, IMapper mapper)
         {
             this.brandRepository = brandRepository;
+            this.mapper = mapper;
         }
 
 
@@ -27,17 +30,20 @@ namespace HardwareBayAPI.Controllers
             // get data from Domain models (Database)
             var brands = await brandRepository.GetAllAsync();
             // map domain models to DTOs
-            var brandsDto = new List<BrandDto>();
-            foreach (var brandDomain in brands)
-            {
-                brandsDto.Add(new BrandDto()
-                {
-                    BrandID = brandDomain.BrandID,
-                    BrandName = brandDomain.BrandName,
-                    Description = brandDomain.Description,
-                    IsActive = brandDomain.IsActive
-                });
-            }
+            //var brandsDto = new List<BrandDto>();
+            //foreach (var brandDomain in brands)
+            //{
+            //    brandsDto.Add(new BrandDto()
+            //    {
+            //        BrandID = brandDomain.BrandID,
+            //        BrandName = brandDomain.BrandName,
+            //        Description = brandDomain.Description,
+            //        IsActive = brandDomain.IsActive
+            //    });
+            //}
+
+            // map domain models to DTOs
+            var brandsDto= mapper.Map<List<BrandDto>>(brands);
 
             return Ok(brandsDto);
         }
@@ -56,14 +62,15 @@ namespace HardwareBayAPI.Controllers
                 return NotFound();
             }
             // map domain models to DTOs
-            var brandDto = new BrandDto()
-            {
-                BrandID = brandDomain.BrandID,
-                BrandName = brandDomain.BrandName,
-                Description = brandDomain.Description, 
-                IsActive = brandDomain.IsActive
+            var brandDto = mapper.Map<BrandDto>(brandDomain);
+            //var brandDto = new BrandDto()
+            //{
+            //    BrandID = brandDomain.BrandID,
+            //    BrandName = brandDomain.BrandName,
+            //    Description = brandDomain.Description, 
+            //    IsActive = brandDomain.IsActive
              
-            };
+            //};
             return Ok(brandDto);
         }
 
@@ -73,24 +80,26 @@ namespace HardwareBayAPI.Controllers
         public async Task <IActionResult >Create([FromBody] AddBrandRequestDto addBrandRequestDto)
         {
             // Map DTO to domain models
-            var brandDomainModel = new Brand()
-            {
-                BrandName = addBrandRequestDto.BrandName,
-                Description = addBrandRequestDto.Description,
-                IsActive=addBrandRequestDto.IsActive
-            };
+            var brandDomain = mapper.Map<Brand>(addBrandRequestDto);
+            //var brandDomain = new Brand()
+            //{
+            //    BrandName = addBrandRequestDto.BrandName,
+            //    Description = addBrandRequestDto.Description,
+            //    IsActive=addBrandRequestDto.IsActive
+            //};
 
             //use domain model to create Brand
-            brandDomainModel=await brandRepository.CreateAsync(brandDomainModel);
+            brandDomain = await brandRepository.CreateAsync(brandDomain);
 
             // map domain model back to DTO
-            var brandDto = new BrandDto()
-            {
-                BrandID = brandDomainModel.BrandID,
-                BrandName = brandDomainModel.BrandName,
-                Description = brandDomainModel.Description,
-                IsActive = brandDomainModel.IsActive
-            };
+            var brandDto = mapper.Map<BrandDto>(brandDomain);
+            //var brandDto = new BrandDto()
+            //{
+            //    BrandID = brandDomain.BrandID,
+            //    BrandName = brandDomain.BrandName,
+            //    Description = brandDomain.Description,
+            //    IsActive = brandDomain.IsActive
+            //};
 
             return CreatedAtAction(nameof(GetBrandById), new { id = brandDto.BrandID }, brandDto);
         }
@@ -100,28 +109,30 @@ namespace HardwareBayAPI.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateBrandRequestDto updateBrandRequestDto)
         {
             // map DTO to domain model
-            var brandDomainModel = new Brand
-            {
-                BrandName = updateBrandRequestDto.BrandName,
-                Description = updateBrandRequestDto.Description,
-                IsActive = updateBrandRequestDto.IsActive
-            };
+            var brandDomain= mapper.Map<Brand>(updateBrandRequestDto);
+            //var brandDomain = new Brand
+            //{
+            //    BrandName = updateBrandRequestDto.BrandName,
+            //    Description = updateBrandRequestDto.Description,
+            //    IsActive = updateBrandRequestDto.IsActive
+            //};
 
             //check if brand exists
-            brandDomainModel = await brandRepository.UpdateAsync(id, brandDomainModel);
+            brandDomain = await brandRepository.UpdateAsync(id, brandDomain);
             if (brandRepository == null)
             {
                 return NotFound();
             }
 
             // map domain model to DTO
-            var brandDto = new BrandDto()
-            {
-                BrandID = brandDomainModel.BrandID,
-                BrandName = brandDomainModel.BrandName,
-                Description = brandDomainModel.Description,
-                IsActive = brandDomainModel.IsActive
-            };
+            var brandDto=mapper.Map<BrandDto>(brandDomain);
+            //var brandDto = new BrandDto()
+            //{
+            //    BrandID = brandDomain.BrandID,
+            //    BrandName = brandDomain.BrandName,
+            //    Description = brandDomain.Description,
+            //    IsActive = brandDomain.IsActive
+            //};
             return Ok(brandDto);
 
         }
