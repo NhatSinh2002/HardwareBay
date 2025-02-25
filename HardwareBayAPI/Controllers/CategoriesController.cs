@@ -77,5 +77,55 @@ namespace HardwareBayAPI.Controllers
             };
             return CreatedAtAction(nameof(GetCategoryByID), new { id = categoryDto.CategoryID }, categoryDto);
         }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
+        {
+            //map DTO to domain model
+            var categoryDomain = new Category()
+            {
+                CategoryName= updateCategoryRequestDto.CategoryName,
+                Description = updateCategoryRequestDto.Description,
+                IsActive = updateCategoryRequestDto.IsActive
+            };
+            //check category and update
+            categoryDomain = await categoryRepository.UpdateAsync(id,categoryDomain);
+            if (categoryDomain == null)
+            {
+                return NotFound();
+            }
+
+            //map domain model to DTO
+            var categoryDto = new CategoryDto()
+            {
+                CategoryID = categoryDomain.CategoryID,
+                CategoryName = categoryDomain.CategoryName,
+                Description = categoryDomain.Description,
+                IsActive = categoryDomain.IsActive
+            };
+            return Ok(categoryDto);
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            //check category and delete
+            var categoryDomain = await categoryRepository.DeleteAsync(id);
+            if (categoryDomain == null)
+            {
+                return NotFound();
+            }
+            //map domain model to DTO
+            var categoryDto = new CategoryDto()
+            {
+                CategoryID = categoryDomain.CategoryID,
+                CategoryName = categoryDomain.CategoryName,
+                Description = categoryDomain.Description,
+                IsActive = categoryDomain.IsActive
+            };
+            return Ok(categoryDto);
+        }
     }
 }

@@ -49,11 +49,11 @@ namespace HardwareBayAPI.Repositories
             {
                 return null;
             }
-            category.CategoryName= existingCategory.CategoryName;
-            category.Description= existingCategory.Description;
-            category.IsActive = existingCategory.IsActive;
+            existingCategory.CategoryName= category.CategoryName;
+            existingCategory.Description= category.Description;
+            existingCategory.IsActive = category.IsActive;
             await dbContext.SaveChangesAsync();
-            return category;
+            return existingCategory;
 
         }
     }

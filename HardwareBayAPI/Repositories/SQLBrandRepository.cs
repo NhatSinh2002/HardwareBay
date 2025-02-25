@@ -43,7 +43,7 @@ namespace HardwareBayAPI.Repositories
             return await dbContext.Brands.FirstOrDefaultAsync(x => x.BrandID == id);
         }
 
-        public async Task<Brand> UpdateAsync(int id, Brand brand)
+        public async Task<Brand?> UpdateAsync(int id, Brand brand)
         {
             var existingBrand = await dbContext.Brands.FirstOrDefaultAsync(x=>x.BrandID == id);
             if (existingBrand == null)
