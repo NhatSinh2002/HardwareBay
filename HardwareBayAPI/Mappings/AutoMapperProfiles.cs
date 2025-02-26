@@ -16,6 +16,9 @@ namespace HardwareBayAPI.Mappings
             CreateMap<AddCategoryRequestDto, Category>();
             CreateMap<UpdateCategoryRequestDto, Category>();
 
+            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<AddProductRequestDto, Product>();
+            CreateMap<UpdateProductRequestDto, Product>();
         }
     }
 }

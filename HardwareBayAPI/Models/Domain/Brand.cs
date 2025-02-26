@@ -8,6 +8,6 @@
         public bool IsActive { get; set; }
 
         // Navigation properties
-        // public ICollection<Product> Products { get; set; }
+         public ICollection<Product> Products { get; set; }
     }
 }

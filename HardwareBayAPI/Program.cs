@@ -17,6 +17,7 @@ builder.Services.AddDbContext<HardwareDbContext>(options =>
 
 builder.Services.AddScoped<IBrandRepository, SQLBrandRepository>();
 builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
+builder.Services.AddScoped<IProductRepository, SQLProductRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

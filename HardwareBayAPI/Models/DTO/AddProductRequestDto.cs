@@ -1,8 +1,7 @@
-﻿namespace HardwareBayAPI.Models.Domain
+﻿namespace HardwareBayAPI.Models.DTO
 {
-    public class Product
+    public class AddProductRequestDto
     {
-        public int ProductID { get; set; }
         public string ProductName { get; set; }
         public int CategoryID { get; set; }
         public int BrandID { get; set; }
@@ -12,11 +11,5 @@
         public string? ImageURL { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool? IsActive { get; set; }
-
-        // Navigation properties
-        public Category Category { get; set; }
-        public Brand Brand { get; set; }
-        //public ICollection<Review> Reviews { get; set; }
-        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }
