@@ -6,7 +6,7 @@
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public string Email { get; set; }
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string Role { get; set; } // E.g., "Customer" or "Admin"
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }

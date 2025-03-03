@@ -4,6 +4,8 @@
     {
         public int CartID { get; set; }
         public int UserID { get; set; }
+        public string Status { get; set; } // "Active", "Ordered", "Abandoned"
+
         public DateTime CreatedDate { get; set; }
 
         // Navigation properties

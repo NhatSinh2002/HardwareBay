@@ -57,13 +57,20 @@ namespace HardwareBayAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AddCategoryRequestDto addCategoryRequestDto)
         {
-            //Map DTO to domain model
-            var categoryDomain = mapper.Map<Category>(addCategoryRequestDto);
-            //create category
-            categoryDomain = await categoryRepository.CreateAsync(categoryDomain);
-            //Map domain model back to DTO
-            var categoryDto = mapper.Map<CategoryDto>(categoryDomain);
-            return CreatedAtAction(nameof(GetCategoryByID), new { id = categoryDto.CategoryID }, categoryDto);
+            if (ModelState.IsValid) 
+            {
+                //Map DTO to domain model
+                var categoryDomain = mapper.Map<Category>(addCategoryRequestDto);
+                //create category
+                categoryDomain = await categoryRepository.CreateAsync(categoryDomain);
+                //Map domain model back to DTO
+                var categoryDto = mapper.Map<CategoryDto>(categoryDomain);
+                return CreatedAtAction(nameof(GetCategoryByID), new { id = categoryDto.CategoryID }, categoryDto);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpPut]

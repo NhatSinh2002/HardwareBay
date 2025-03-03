@@ -9,7 +9,7 @@
         public string Status { get; set; } // Pending, Paid, Shipped, Delivered, Canceled
         public string ShippingAddress { get; set; }
         public string PhoneNumber { get; set; }
-
+        public string PaymentMethod { get; set; } // "Credit Card", "Paypal", "COD"
         // Navigation properties
         public User User { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }

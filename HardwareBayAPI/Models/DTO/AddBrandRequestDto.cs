@@ -1,4 +1,6 @@
-﻿namespace HardwareBayAPI.Models.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HardwareBayAPI.Models.DTO
 {
     public class AddBrandRequestDto
     {
